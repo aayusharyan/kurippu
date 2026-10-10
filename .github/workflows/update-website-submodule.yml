@@ -1,0 +1,34 @@
+name: Update website submodule
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-submodule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Update website submodule to latest commit
+        run: git submodule update --remote website
+
+      - name: Commit and push if the submodule moved
+        run: |
+          if git diff --quiet -- website; then
+            echo "website submodule already up to date"
+            exit 0
+          fi
+          git config user.name "Aayush Sinha"
+          git config user.email "hello@yush.dev"
+          git add website
+          git commit -m "chore: update website submodule"
+          git push
