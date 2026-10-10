@@ -1,0 +1,209 @@
+# Manual release: bump semver in manifest.json, pack the extension zip,
+# then tag and publish a GitHub Release with that zip attached.
+
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      # Only minor and major bumps; patch is unused so every release is X.Y.0.
+      version_bump:
+        description: Version bump type
+        required: true
+        type: choice
+        options:
+          - minor
+          - major
+        default: minor
+
+# One release at a time. Do not cancel a run mid-pack if another is queued.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    # Needed to push the version commit, annotated tag, and GitHub Release.
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out complete history
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+
+      # Tags are the release source of truth. Before the first release, use the
+      # manifest version so a minor bump from 0.1.0 produces 0.2.0.
+      - name: Calculate release version
+        id: version
+        shell: bash
+        run: |
+          latest_tag=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-version:refname | awk 'NR==1')
+          manifest_version=$(node --print "require('./manifest.json').version")
+
+          if [[ -n "$latest_tag" ]]; then
+            current_version=${latest_tag#v}
+            if [[ "$manifest_version" != "$current_version" ]]; then
+              echo "manifest.json is at ${manifest_version}, but the latest tag is ${latest_tag}." >&2
+              echo "Align them before preparing another release." >&2
+              exit 1
+            fi
+          else
+            current_version=$manifest_version
+          fi
+
+          if [[ ! "$current_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Current version is not valid semver: ${current_version}" >&2
+            exit 1
+          fi
+
+          IFS=. read -r major minor _ <<< "$current_version"
+          case "${{ inputs.version_bump }}" in
+            major)
+              major=$((major + 1))
+              minor=0
+              ;;
+            minor)
+              minor=$((minor + 1))
+              ;;
+          esac
+
+          version="${major}.${minor}.0"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "tag=v${version}" >> "$GITHUB_OUTPUT"
+          echo "previous_tag=${latest_tag}" >> "$GITHUB_OUTPUT"
+          echo "Preparing v${version} from ${current_version}"
+
+      - name: Update manifest version
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const path = 'manifest.json';
+          const manifest = JSON.parse(fs.readFileSync(path, 'utf8'));
+          manifest.version = process.env.VERSION;
+          fs.writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);
+          EOF
+
+          manifest_version=$(node --print "require('./manifest.json').version")
+          if [[ "$manifest_version" != "$VERSION" ]]; then
+            echo "manifest.json was not updated to ${VERSION}." >&2
+            exit 1
+          fi
+
+      # # Lightweight checks only: there is no build step or test suite.
+      # - name: Check extension package inputs
+      #   run: |
+      #     node <<'EOF'
+      #     const fs = require('fs');
+      #     const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+      #     const required = ['manifest_version', 'name', 'version', 'background', 'action'];
+      #     for (const key of required) {
+      #       if (manifest[key] == null) {
+      #         console.error(`manifest.json is missing required field: ${key}`);
+      #         process.exit(1);
+      #       }
+      #     }
+      #     if (manifest.manifest_version !== 3) {
+      #       console.error(`Expected manifest_version 3, got ${manifest.manifest_version}`);
+      #       process.exit(1);
+      #     }
+      #     if (!/^\d+\.\d+\.\d+$/.test(manifest.version)) {
+      #       console.error(`manifest.json version is not valid semver: ${manifest.version}`);
+      #       process.exit(1);
+      #     }
+      #     EOF
+
+      #     required_paths=(
+      #       background.js
+      #       content.js
+      #       popup.html
+      #       popup.js
+      #       options.html
+      #       options.js
+      #       welcome.html
+      #       welcome.js
+      #       lib/shared.js
+      #       lib/drive.js
+      #       lib/config.js
+      #       styles
+      #       fonts
+      #       icons
+      #       LICENSE
+      #       THIRD_PARTY_NOTICES.md
+      #     )
+      #     for path in "${required_paths[@]}"; do
+      #       if [[ ! -e "$path" ]]; then
+      #         echo "Missing required path for the release zip: ${path}" >&2
+      #         exit 1
+      #       fi
+      #     done
+
+      - name: Package extension
+        id: package
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          stage="$RUNNER_TEMP/kurippu-extension"
+          mkdir -p "$stage"
+          # Runtime files only. Markdown docs (README, CONTRIBUTING, etc.)
+          # and the website submodule stay out.
+          cp manifest.json \
+            background.js content.js \
+            popup.html popup.js \
+            options.html options.js \
+            welcome.html welcome.js \
+            LICENSE THIRD_PARTY_NOTICES.md \
+            "$stage/"
+          cp -R lib styles fonts icons "$stage/"
+
+          asset="kurippu-${TAG}.zip"
+          (cd "$stage" && zip -r "$OLDPWD/$asset" .)
+          echo "asset=${asset}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload extension artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: kurippu-${{ steps.version.outputs.tag }}
+          path: ${{ steps.package.outputs.asset }}
+          if-no-files-found: error
+          retention-days: 31
+
+      # Publish the bump only once the zip is packed, so every tag on the
+      # branch corresponds to a release asset that was produced successfully.
+      - name: Push version bump and tag
+        env:
+          BRANCH: ${{ github.event.repository.default_branch }}
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "Aayush Sinha"
+          git config user.email "hello@yush.dev"
+          git add manifest.json
+          git commit --message "chore: bump version to ${VERSION}"
+          git push origin "HEAD:refs/heads/${BRANCH}"
+          git tag --annotate "$TAG" --message "Release ${TAG}"
+          git push origin "$TAG"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+          PREVIOUS_TAG: ${{ steps.version.outputs.previous_tag }}
+          ASSET: ${{ steps.package.outputs.asset }}
+        run: |
+          # Bound generated notes to the previous tag when one exists.
+          notes_args=()
+          if [[ -n "$PREVIOUS_TAG" ]]; then
+            notes_args+=(--notes-start-tag "$PREVIOUS_TAG")
+          fi
+
+          gh release create "$TAG" "$ASSET" \
+            --title "$TAG" \
+            --generate-notes \
+            "${notes_args[@]}"
