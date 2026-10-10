@@ -1,4 +1,4 @@
-# Manual release: bump semver in manifest.json, pack the extension zip,
+# Manual release: bump semver in extension/manifest.json, pack the extension zip,
 # then tag and publish a GitHub Release with that zip attached.
 
 name: Create Release
@@ -43,12 +43,12 @@ jobs:
         shell: bash
         run: |
           latest_tag=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-version:refname | awk 'NR==1')
-          manifest_version=$(node --print "require('./manifest.json').version")
+          manifest_version=$(node --print "require('./extension/manifest.json').version")
 
           if [[ -n "$latest_tag" ]]; then
             current_version=${latest_tag#v}
             if [[ "$manifest_version" != "$current_version" ]]; then
-              echo "manifest.json is at ${manifest_version}, but the latest tag is ${latest_tag}." >&2
+              echo "extension/manifest.json is at ${manifest_version}, but the latest tag is ${latest_tag}." >&2
               echo "Align them before preparing another release." >&2
               exit 1
             fi
@@ -84,15 +84,15 @@ jobs:
         run: |
           node <<'EOF'
           const fs = require('fs');
-          const path = 'manifest.json';
+          const path = 'extension/manifest.json';
           const manifest = JSON.parse(fs.readFileSync(path, 'utf8'));
           manifest.version = process.env.VERSION;
           fs.writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);
           EOF
 
-          manifest_version=$(node --print "require('./manifest.json').version")
+          manifest_version=$(node --print "require('./extension/manifest.json').version")
           if [[ "$manifest_version" != "$VERSION" ]]; then
-            echo "manifest.json was not updated to ${VERSION}." >&2
+            echo "extension/manifest.json was not updated to ${VERSION}." >&2
             exit 1
           fi
 
@@ -101,7 +101,7 @@ jobs:
       #   run: |
       #     node <<'EOF'
       #     const fs = require('fs');
-      #     const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+      #     const manifest = JSON.parse(fs.readFileSync('extension/manifest.json', 'utf8'));
       #     const required = ['manifest_version', 'name', 'version', 'background', 'action'];
       #     for (const key of required) {
       #       if (manifest[key] == null) {
@@ -120,20 +120,18 @@ jobs:
       #     EOF
 
       #     required_paths=(
-      #       background.js
-      #       content.js
-      #       popup.html
-      #       popup.js
-      #       options.html
-      #       options.js
-      #       welcome.html
-      #       welcome.js
-      #       lib/shared.js
-      #       lib/drive.js
-      #       lib/config.js
-      #       styles
-      #       fonts
-      #       icons
+      #       extension/manifest.json
+      #       extension/background/background.js
+      #       extension/content/content.js
+      #       extension/pages/popup
+      #       extension/pages/options
+      #       extension/pages/welcome
+      #       extension/shared/shared.js
+      #       extension/shared/drive.js
+      #       extension/shared/config.js
+      #       extension/assets/styles
+      #       extension/assets/fonts
+      #       extension/assets/icons
       #       LICENSE
       #       THIRD_PARTY_NOTICES.md
       #     )
@@ -153,14 +151,8 @@ jobs:
           mkdir -p "$stage"
           # Runtime files only. Markdown docs (README, CONTRIBUTING, etc.)
           # and the website submodule stay out.
-          cp manifest.json \
-            background.js content.js \
-            popup.html popup.js \
-            options.html options.js \
-            welcome.html welcome.js \
-            LICENSE THIRD_PARTY_NOTICES.md \
-            "$stage/"
-          cp -R lib styles fonts icons "$stage/"
+          cp -R extension/. "$stage/"
+          cp LICENSE THIRD_PARTY_NOTICES.md "$stage/"
 
           asset="kurippu-${TAG}.zip"
           (cd "$stage" && zip -r "$OLDPWD/$asset" .)
@@ -184,7 +176,7 @@ jobs:
         run: |
           git config user.name "Aayush Sinha"
           git config user.email "hello@yush.dev"
-          git add manifest.json
+          git add extension/manifest.json
           git commit --message "chore: bump version to ${VERSION}"
           git push origin "HEAD:refs/heads/${BRANCH}"
           git tag --annotate "$TAG" --message "Release ${TAG}"
