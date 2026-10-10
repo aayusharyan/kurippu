@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "Kurippu - sticky notes for any website",
+  "short_name": "Kurippu",
+  "version": "0.1.0",
+  "description": "Kurippu is a free, open-source Chrome extension for sticky notes on any website. Right-click, write, done - back where you left it.",
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Kurippu",
+    "default_popup": "pages/popup/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png"
+    }
+  },
+  "background": {
+    "service_worker": "background/background.js"
+  },
+  "options_page": "pages/options/options.html",
+  "permissions": ["storage", "unlimitedStorage", "contextMenus", "activeTab", "identity", "identity.email", "alarms", "scripting"],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*",
+    "https://kurippu.yush.dev/*",
+    "https://kurippu-510919.web.app/*",
+    "https://kurippu-510919.firebaseapp.com/*",
+    "https://www.googleapis.com/*",
+    "https://openidconnect.googleapis.com/*",
+    "https://oauth2.googleapis.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "file:///*"],
+      "js": ["shared/shared.js", "content/content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/fonts/*.woff2"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "commands": {
+    "new-note": {
+      "suggested_key": { "default": "Alt+Shift+N" },
+      "description": "Add a note in the middle of the page"
+    }
+  }
+}
