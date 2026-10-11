@@ -1,6 +1,5 @@
-/* Kurippu - extension pages. Tokens from the Classical design system
-   (project/classical.css), with fonts bundled locally instead of loaded
-   from Google Fonts. */
+/* Shared extension-page tokens and components from the Classical design system.
+   Fonts are bundled locally instead of loaded from Google Fonts. */
 @font-face { font-family: "Lora"; font-weight: 400; font-style: normal; font-display: swap; src: url(../fonts/lora-latin-400-normal.woff2) format("woff2"); }
 @font-face { font-family: "Lora"; font-weight: 400; font-style: italic; font-display: swap; src: url(../fonts/lora-latin-400-italic.woff2) format("woff2"); }
 @font-face { font-family: "Lora"; font-weight: 600; font-style: normal; font-display: swap; src: url(../fonts/lora-latin-600-normal.woff2) format("woff2"); }
