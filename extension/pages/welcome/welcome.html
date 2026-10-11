@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!-- First-run welcome page: how to place notes, what Markdown Preview
+     understands, and a demo box that runs the note engine in memory. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Welcome to Kurippu</title>
+<link rel="icon" href="../../assets/icons/icon32.png">
+<link rel="stylesheet" href="../../assets/styles/kurippu.css">
+<link rel="stylesheet" href="welcome.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="intro">
+      <div class="eyebrow">Welcome to Kurippu · குறிப்பு, a note</div>
+      <h1>Leave notes in the margins of the web.</h1>
+      <p class="lede">They come back exactly where you left them - next visit, next week, on your other computer.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="num">1</span><h2>Right-click anywhere</h2><p>Choose <i>Add sticky note here</i>. Write in Markdown; flip to Preview to see it set.</p></div>
+      <div class="step"><span class="num">2</span><h2>Or <span class="mod">Ctrl</span> + click</h2><p>For pages with their own right-click menu. <span id="macline">⌘ + click on a Mac. </span>Links behave as normal.</p></div>
+      <div class="step"><span class="num">3</span><h2>It follows you</h2><p>Synced through your browser profile automatically. Add an encrypted Drive backup any time.</p></div>
+    </div>
+    <div class="md-ref">
+      <div class="eyebrow">Markdown</div>
+      <h2>What Preview understands</h2>
+      <p>Type these in a note - nothing fancier is needed.</p>
+      <ul class="md-bits">
+        <li><code># ## ###</code> headings</li>
+        <li><code>**bold**</code></li>
+        <li><code>*italic*</code> or <code>_italic_</code></li>
+        <li><code>~~strike~~</code></li>
+        <li><code>`code`</code></li>
+        <li><code>[label](https://…)</code> links</li>
+        <li><code>- item</code> bullets</li>
+        <li><code>1. item</code> numbered</li>
+        <li><code>- [ ]</code> / <code>- [x]</code> tasks</li>
+        <li><code>&gt; quote</code></li>
+        <li><code>#tag</code></li>
+        <li><code>---</code> rule</li>
+      </ul>
+    </div>
+    <div class="try">
+      <div class="box" id="box"><span>Try it - <span class="mod">Ctrl</span> + click inside this box, or right-click</span></div>
+      <div class="ctas">
+        <a class="btn btn-primary" id="drive" href="../options/options.html#sync"></a>
+        <button class="btn plain" id="go">Start browsing</button>
+      </div>
+    </div>
+  </div>
+<!-- Classic script (not js/): must set KURIPPU_DEMO before the note engine below.
+     Modules under js/ are deferred and would run too late. -->
+<script src="demo.js"></script>
+<script src="../../shared/constants.js"></script>
+<script src="../../shared/markdown.js"></script>
+<script src="../../shared/time.js"></script>
+<script src="../../shared/revision.js"></script>
+<script src="../../shared/storage.js"></script>
+<script src="../../shared/note-css.js"></script>
+<script src="../../shared/icons.js"></script>
+<script src="../../shared/shared.js"></script>
+<script src="../../content/setup.js"></script>
+<script src="../../content/db.js"></script>
+<script src="../../content/motion.js"></script>
+<script src="../../content/shadow.js"></script>
+<script src="../../content/anchor.js"></script>
+<script src="../../content/render.js"></script>
+<script src="../../content/persist.js"></script>
+<script src="../../content/interact.js"></script>
+<script src="../../content/events.js"></script>
+<script src="../../content/fonts.js"></script>
+<script src="../../content/content.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
