@@ -28,7 +28,6 @@
     "contextMenus",
     "activeTab",
     "identity",
-    "identity.email",
     "alarms",
     "scripting"
   ],
@@ -50,7 +49,24 @@
         "file:///*"
       ],
       "js": [
+        "shared/constants.js",
+        "shared/markdown.js",
+        "shared/time.js",
+        "shared/revision.js",
+        "shared/storage.js",
+        "shared/note-css.js",
+        "shared/icons.js",
         "shared/shared.js",
+        "content/setup.js",
+        "content/db.js",
+        "content/motion.js",
+        "content/shadow.js",
+        "content/anchor.js",
+        "content/render.js",
+        "content/persist.js",
+        "content/interact.js",
+        "content/events.js",
+        "content/fonts.js",
         "content/content.js"
       ],
       "run_at": "document_idle",
