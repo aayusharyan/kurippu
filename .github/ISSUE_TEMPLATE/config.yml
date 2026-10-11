@@ -1,0 +1,10 @@
+# Points website work and private security reports away from the blank-issue form.
+
+blank_issues_enabled: false
+contact_links:
+  - name: Website issues
+    url: https://github.com/aayusharyan/kurippu-website/issues
+    about: Bugs and suggestions for the landing page, privacy policy and live demo belong in the website repository.
+  - name: Security or privacy report
+    url: https://github.com/aayusharyan/kurippu/blob/main/SECURITY.md
+    about: Please report security problems privately. Do not open a public issue.
