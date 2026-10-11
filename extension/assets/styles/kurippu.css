@@ -1,0 +1,103 @@
+/* Kurippu - extension pages. Tokens from the Classical design system
+   (project/classical.css), with fonts bundled locally instead of loaded
+   from Google Fonts. */
+@font-face { font-family: "Lora"; font-weight: 400; font-style: normal; font-display: swap; src: url(../fonts/lora-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "Lora"; font-weight: 400; font-style: italic; font-display: swap; src: url(../fonts/lora-latin-400-italic.woff2) format("woff2"); }
+@font-face { font-family: "Lora"; font-weight: 600; font-style: normal; font-display: swap; src: url(../fonts/lora-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family: "Lora"; font-weight: 600; font-style: italic; font-display: swap; src: url(../fonts/lora-latin-600-italic.woff2) format("woff2"); }
+@font-face { font-family: "Cormorant Garamond"; font-weight: 400; font-style: normal; font-display: swap; src: url(../fonts/cormorant-garamond-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "Cormorant Garamond"; font-weight: 600; font-style: normal; font-display: swap; src: url(../fonts/cormorant-garamond-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family: "Cormorant Garamond"; font-weight: 600; font-style: italic; font-display: swap; src: url(../fonts/cormorant-garamond-latin-600-italic.woff2) format("woff2"); }
+
+:root {
+  --color-bg: #f3f2f2;
+  --color-surface: #eae9e9;
+  --color-text: #201f1d;
+  --color-accent: #b68235;
+  --color-divider: color-mix(in srgb, #201f1d 16%, transparent);
+  --color-neutral-100: #f8f4f4; --color-neutral-200: #eae7e7; --color-neutral-300: #d7d3d3;
+  --color-neutral-400: #bab6b6; --color-neutral-500: #9b9797; --color-neutral-600: #7d7979;
+  --color-neutral-700: #605d5d; --color-neutral-800: #444141; --color-neutral-900: #2d2b2b;
+  --color-accent-100: #fff3e4; --color-accent-200: #ffe3bf; --color-accent-300: #facb8d;
+  --color-accent-400: #e1ad66; --color-accent-500: #c28d41; --color-accent-600: #a06f24;
+  --color-accent-700: #7d5411; --color-accent-800: #5a3b0a; --color-accent-900: #3a270d;
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Lora", Georgia, serif;
+  --k-heading: var(--font-heading);
+  --k-body: var(--font-body);
+  --radius-sm: 2px; --radius-md: 4px; --radius-lg: 7px;
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2d2b2b 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2d2b2b 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
+  --brand: oklch(0.89 0.065 85);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--color-bg); color: var(--color-text); font: 15px/1.55 var(--font-body); }
+a { color: var(--color-accent-700); text-underline-offset: 3px; }
+a:hover { color: var(--color-accent-600); }
+button { font: inherit; color: inherit; }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+input::placeholder, textarea::placeholder { color: rgba(32, 31, 29, 0.45); }
+[hidden] { display: none !important; }
+
+/* - brand mark - */
+.mark { flex: none; width: 22px; height: 22px; border-radius: 3px; background: var(--brand); display: grid; place-items: center; color: var(--color-neutral-900); }
+.mark.lg { width: 24px; height: 24px; }
+.brand { font: 600 19px/1 var(--font-heading); }
+
+/* - buttons (outlined; never filled) - */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 9px 16px; border: 1px solid var(--color-divider); border-radius: var(--radius-md);
+  background: transparent; color: var(--color-text); cursor: pointer;
+  font: 600 14px/1.2 var(--font-heading); text-decoration: none; white-space: nowrap;
+}
+.btn:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.btn:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-primary { border-color: var(--color-accent); color: var(--color-accent-700); }
+.btn-primary:hover { background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+.btn-primary:active { background: color-mix(in srgb, var(--color-accent) 22%, transparent); }
+.btn-lg { padding: 10px 18px; font-size: 15px; }
+.btn-ghost { border-color: transparent; color: var(--color-accent-700); padding: 6px 8px; }
+.btn-ghost:hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
+.btn-icon { width: 32px; height: 32px; padding: 0; border: 0; color: var(--color-neutral-700); }
+.link-btn { border: 0; background: transparent; padding: 4px 6px; margin: -4px -6px; border-radius: 3px; font: 600 13px/1 var(--font-heading); color: var(--color-accent-800); cursor: pointer; }
+.link-btn:hover { background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+
+/* - toggle switch - */
+.switch { position: relative; flex: none; width: 34px; height: 20px; border-radius: 10px; border: 1px solid var(--color-neutral-500); background: transparent; cursor: pointer; padding: 0; }
+.switch::after { content: ""; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--color-neutral-500); transition: left .15s; }
+.switch[aria-checked="true"] { border-color: var(--color-accent); }
+.switch[aria-checked="true"]::after { left: 16px; background: var(--color-accent); }
+
+/* - segmented control - */
+.seg { display: inline-flex; border: 1px solid var(--color-divider); border-radius: var(--radius-md); overflow: hidden; font-size: 13px; }
+.seg button { padding: 7px 14px; border: 0; background: transparent; cursor: pointer; color: var(--color-text); }
+.seg button + button { border-left: 1px solid var(--color-divider); }
+.seg button:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.seg button[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--color-accent); color: var(--color-accent-700); background: transparent; }
+
+/* - color dots - */
+.dot { flex: none; width: 10px; height: 10px; border-radius: 50%; }
+.swatch { flex: none; width: 18px; height: 18px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; }
+.swatch.bordered { border: 1px solid var(--color-neutral-400); }
+.swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 3.5px var(--color-text); }
+
+.kicker { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); font-feature-settings: "tnum"; }
+.muted { color: var(--color-neutral-700); }
+.tnum { font-feature-settings: "tnum"; }
+.rule { height: 1px; background: var(--color-divider); border: 0; margin: 0; }
+
+/* - dialog - */
+.backdrop { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; background: color-mix(in srgb, var(--color-neutral-900) 50%, transparent); }
+.dialog { width: min(460px, 100%); display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-lg); border: 1px solid var(--color-divider); }
+.dialog-title { font: 600 24px/1.15 var(--font-heading); }
+.dialog dl { display: grid; grid-template-columns: 110px 1fr; row-gap: 6px; margin: 0; font-size: 13px; font-feature-settings: "tnum"; }
+.dialog dt { color: var(--color-neutral-700); }
+.dialog dd { margin: 0; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
