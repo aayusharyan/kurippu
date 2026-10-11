@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Kurippu - sticky notes for any website",
   "short_name": "Kurippu",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Kurippu is a free, open-source Chrome extension for sticky notes on any website. Right-click, write, done - back where you left it.",
   "icons": {
     "16": "assets/icons/icon16.png",
