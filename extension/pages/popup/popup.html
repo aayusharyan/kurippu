@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!-- Toolbar popup for viewing page notes, creating a note, and opening settings. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kurippu</title>
+<link rel="stylesheet" href="../../assets/styles/kurippu.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="head">
+    <span class="mark" id="mark"></span>
+    <span class="brand">Kurippu</span>
+    <button class="btn btn-icon" id="settings" title="Sync &amp; backup" aria-label="Sync and backup settings"></button>
+  </div>
+
+  <div id="can" hidden>
+    <div class="site">
+      <div class="site-name"><div class="site-host" id="host"></div><div class="site-path" id="path"></div></div>
+      <label for="show">Show on this site</label>
+      <button class="switch" id="show" role="switch" aria-checked="true"></button>
+    </div>
+    <div class="kicker list-head" id="placedHead">On this page · 0</div>
+    <div class="rows" id="placed"></div>
+    <div id="unplacedWrap" hidden>
+      <div class="kicker list-head" id="unplacedHead"></div>
+      <div class="rows" id="unplaced"></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" id="new"></button>
+      <button class="btn" id="all">All notes</button>
+    </div>
+  </div>
+
+  <div id="cannot" class="restricted" hidden>
+    <p>Browsers don’t let extensions add notes to their own pages, or to the extension store.</p>
+    <button class="btn" id="all2">All notes</button>
+  </div>
+
+  <div class="foot">
+    <span id="syncLine"></span>
+    <button id="driveLine"></button>
+  </div>
+<script src="../../shared/constants.js"></script>
+<script src="../../shared/markdown.js"></script>
+<script src="../../shared/time.js"></script>
+<script src="../../shared/revision.js"></script>
+<script src="../../shared/storage.js"></script>
+<script src="../../shared/note-css.js"></script>
+<script src="../../shared/icons.js"></script>
+<script src="../../shared/shared.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
