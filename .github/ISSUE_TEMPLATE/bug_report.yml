@@ -1,0 +1,61 @@
+# Extension bug intake form for sticky notes, sync, backup, and UI.
+# Security or privacy reports belong in SECURITY.md, not in this tracker.
+
+name: Bug report
+description: Something in the extension is broken or looks wrong
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this. This tracker is for the **browser extension**. For a security or privacy problem, please don't file it here; follow the instructions in SECURITY.md in the repository root instead. Website issues belong in the [kurippu-website](https://github.com/aayusharyan/kurippu-website) repository.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you see, and what did you expect to see instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The page or options screen, and the clicks or keys that trigger it.
+      placeholder: |
+        1. Load the extension unpacked
+        2. Open example.com
+        3. Right-click → Add sticky note here
+        4. ...
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 131, Brave 1.73, Edge 131...
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: macOS, Windows, Linux...
+  - type: input
+    id: extension-version
+    attributes:
+      label: Extension version
+      description: Shown at the bottom of the options page sidebar (toolbar icon → All notes, or the gear).
+      placeholder: 1.0.0
+  - type: dropdown
+    id: install-type
+    attributes:
+      label: How did you install it?
+      options:
+        - Loaded unpacked from this repository
+        - Chrome Web Store / other packaged build
+        - Other
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots, console errors or other detail
+      description: Drag images in here, or paste errors from the page console or the service worker console on chrome://extensions.
