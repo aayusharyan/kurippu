@@ -96,51 +96,51 @@ jobs:
             exit 1
           fi
 
-      # # Lightweight checks only: there is no build step or test suite.
-      # - name: Check extension package inputs
-      #   run: |
-      #     node <<'EOF'
-      #     const fs = require('fs');
-      #     const manifest = JSON.parse(fs.readFileSync('extension/manifest.json', 'utf8'));
-      #     const required = ['manifest_version', 'name', 'version', 'background', 'action'];
-      #     for (const key of required) {
-      #       if (manifest[key] == null) {
-      #         console.error(`manifest.json is missing required field: ${key}`);
-      #         process.exit(1);
-      #       }
-      #     }
-      #     if (manifest.manifest_version !== 3) {
-      #       console.error(`Expected manifest_version 3, got ${manifest.manifest_version}`);
-      #       process.exit(1);
-      #     }
-      #     if (!/^\d+\.\d+\.\d+$/.test(manifest.version)) {
-      #       console.error(`manifest.json version is not valid semver: ${manifest.version}`);
-      #       process.exit(1);
-      #     }
-      #     EOF
+      # Lightweight checks only: there is no build step or test suite.
+      - name: Check extension package inputs
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const manifest = JSON.parse(fs.readFileSync('extension/manifest.json', 'utf8'));
+          const required = ['manifest_version', 'name', 'version', 'background', 'action'];
+          for (const key of required) {
+            if (manifest[key] == null) {
+              console.error(`manifest.json is missing required field: ${key}`);
+              process.exit(1);
+            }
+          }
+          if (manifest.manifest_version !== 3) {
+            console.error(`Expected manifest_version 3, got ${manifest.manifest_version}`);
+            process.exit(1);
+          }
+          if (!/^\d+\.\d+\.\d+$/.test(manifest.version)) {
+            console.error(`manifest.json version is not valid semver: ${manifest.version}`);
+            process.exit(1);
+          }
+          EOF
 
-      #     required_paths=(
-      #       extension/manifest.json
-      #       extension/background/background.js
-      #       extension/content/content.js
-      #       extension/pages/popup
-      #       extension/pages/options
-      #       extension/pages/welcome
-      #       extension/shared/shared.js
-      #       extension/shared/drive.js
-      #       extension/shared/config.js
-      #       extension/assets/styles
-      #       extension/assets/fonts
-      #       extension/assets/icons
-      #       LICENSE
-      #       THIRD_PARTY_NOTICES.md
-      #     )
-      #     for path in "${required_paths[@]}"; do
-      #       if [[ ! -e "$path" ]]; then
-      #         echo "Missing required path for the release zip: ${path}" >&2
-      #         exit 1
-      #       fi
-      #     done
+          required_paths=(
+            extension/manifest.json
+            extension/background/background.js
+            extension/content/content.js
+            extension/pages/popup
+            extension/pages/options
+            extension/pages/welcome
+            extension/shared/shared.js
+            extension/shared/drive.js
+            extension/shared/config.js
+            extension/assets/styles
+            extension/assets/fonts
+            extension/assets/icons
+            LICENSE
+            THIRD_PARTY_NOTICES.md
+          )
+          for path in "${required_paths[@]}"; do
+            if [[ ! -e "$path" ]]; then
+              echo "Missing required path for the release zip: ${path}" >&2
+              exit 1
+            fi
+          done
 
       - name: Package extension
         id: package
