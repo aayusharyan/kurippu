@@ -1,5 +1,6 @@
-# Manual release: bump semver in extension/manifest.json, pack the extension zip,
-# then tag and publish a GitHub Release with that zip attached.
+# Manual release: bump semver in extension/manifest.json, pack the extension
+# zip, sign that zip into a CRX, then tag and publish a GitHub Release with
+# both files attached. This does not upload to the Chrome Web Store.
 
 name: Create Release
 
@@ -158,16 +159,55 @@ jobs:
           (cd "$stage" && zip -r "$OLDPWD/$asset" .)
           echo "asset=${asset}" >> "$GITHUB_OUTPUT"
 
+      - name: Require CRX signing key
+        env:
+          SIGNING_CRX_PRIVATE_KEY: ${{ secrets.SIGNING_CRX_PRIVATE_KEY }}
+        run: |
+          if [[ -z "$SIGNING_CRX_PRIVATE_KEY" || "$SIGNING_CRX_PRIVATE_KEY" != *"PRIVATE KEY"* ]]; then
+            echo "The SIGNING_CRX_PRIVATE_KEY secret must be the PEM private key used to sign the release package." >&2
+            exit 1
+          fi
+
+      # Signs the zip and stops. Store publishing stays off. The action still
+      # requires the OAuth fields below, and sign mode does not use them.
+      - name: Sign extension package
+        id: sign
+        uses: puzzlers-labs/chrome-webstore-publish@v1
+        with:
+          mode: sign
+          extension_id: gaibhdliodoodaiohhabjakiejeldikh
+          zip_file_path: ${{ steps.package.outputs.asset }}
+          client_id: unused
+          client_secret: unused
+          refresh_token: unused
+          crx_private_key: ${{ secrets.SIGNING_CRX_PRIVATE_KEY }}
+
+      - name: Name the signed package
+        id: crx
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          SIGNED: ${{ steps.sign.outputs.package-artifact-path }}
+        run: |
+          if [[ ! -f "$SIGNED" || "$SIGNED" != *.crx ]]; then
+            echo "Signing did not produce a CRX." >&2
+            exit 1
+          fi
+          crx="kurippu-${TAG}.crx"
+          cp "$SIGNED" "$crx"
+          echo "crx=${crx}" >> "$GITHUB_OUTPUT"
+
       - name: Upload extension artifact
         uses: actions/upload-artifact@v7
         with:
           name: kurippu-${{ steps.version.outputs.tag }}
-          path: ${{ steps.package.outputs.asset }}
+          path: |
+            ${{ steps.package.outputs.asset }}
+            ${{ steps.crx.outputs.crx }}
           if-no-files-found: error
           retention-days: 31
 
-      # Publish the bump only once the zip is packed, so every tag on the
-      # branch corresponds to a release asset that was produced successfully.
+      # Publish the bump only once both packages exist, so every tag on the
+      # branch corresponds to release assets that were produced successfully.
       - name: Push version bump and tag
         env:
           BRANCH: ${{ github.event.repository.default_branch }}
@@ -213,7 +253,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.version.outputs.tag }}
           ASSET: ${{ steps.package.outputs.asset }}
+          CRX: ${{ steps.crx.outputs.crx }}
         run: |
-          gh release create "$TAG" "$ASSET" \
+          gh release create "$TAG" "$ASSET" "$CRX" \
             --title "$TAG" \
             --notes-file RELEASE_NOTES.md
