@@ -2,7 +2,7 @@
 
 import { K, esc, pageState, query, main } from '../state.js';
 
-/** Download all active notes as a kurippu-notes.json file. */
+/** Download all notes as a kurippu-notes.json file. */
 export function exportJson() {
   const data = { format: 'kurippu-export', version: 1, exported: new Date().toISOString(), notes: pageState.notes.map(K.portable) };
   const a = document.createElement('a');
