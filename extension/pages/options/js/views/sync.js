@@ -99,13 +99,13 @@ export function renderSync() {
 
   let drive;
   if (!pageState.driveConfigured) {
-    drive = `<p class="prose">Notes are encrypted on this device with a key derived from your Google account, then saved to a hidden app folder in your Drive. Nothing passes through our servers.</p>
+    drive = `<p class="prose">Notes are encrypted on this device with a key derived from your Google account, then saved to a hidden app folder in your Drive. The extension talks to Google directly. Your notes are not sent to us.</p>
       <div class="warn-box">${K.icon('alert', 14)}<div>This build has no Google OAuth client ID, so Drive backup is switched off. Add one in <span class="mono">extension/shared/config.js</span> with the redirect URI <span class="mono">${esc(pageState.redirect)}</span>.</div></div>
       <button class="btn btn-primary btn-lg" disabled>Sign in with Google</button>`;
   } else if (pageState.connecting) {
     drive = '<p class="prose muted">Waiting for Google sign-in…</p>';
   } else if (!d.connected) {
-    drive = `<p class="prose">Notes are encrypted on this device with a key derived from your Google account, then saved to a hidden app folder in your Drive. Nothing passes through our servers.</p>
+    drive = `<p class="prose">Notes are encrypted on this device with a key derived from your Google account, then saved to a hidden app folder in your Drive. The extension talks to Google directly. Your notes are not sent to us.</p>
       <button class="btn btn-primary btn-lg" id="signin">Sign in with Google</button>`;
   } else {
     const activeJob = pageState.driveJob && pageState.driveJob.state === 'running';
