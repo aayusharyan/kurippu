@@ -1,0 +1,43 @@
+# Extension enhancement form for sticky notes, sync, backup, and UI ideas.
+# Website suggestions belong in the kurippu-website repository.
+
+name: Suggestion
+description: Propose a change or improvement to the extension
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This tracker is for the **browser extension**. Ideas for the landing page or privacy policy belong in [kurippu-website](https://github.com/aayusharyan/kurippu-website).
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to improve?
+      description: Describe the problem or the opportunity, not just the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What do you suggest?
+      description: A rough sketch is plenty. For larger changes, it helps to agree on the approach here before opening a pull request.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Project principles
+      description: See "Project principles" in CONTRIBUTING.md.
+      options:
+        - label: This doesn't need analytics, trackers, crash reporters, ads or a new remote endpoint
+          required: true
+        - label: This doesn't require a bundler, transpiler, framework or npm dependency (or I've opened an issue to discuss that first)
+          required: true
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I'd be willing to open a pull request for this
