@@ -1,0 +1,21 @@
+# Weekly Dependabot version updates for GitHub Actions used by workflows
+# under .github/workflows. There is no npm (or other) package manifest in
+# this repo, so only the github-actions ecosystem is configured here.
+
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: Asia/Tokyo
+    groups:
+      actions-minor-and-patch:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
