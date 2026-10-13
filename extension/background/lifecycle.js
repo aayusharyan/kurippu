@@ -1,4 +1,4 @@
-/* Install/startup helpers and on-demand content-script injection.
+/* Install/startup helpers, the uninstall page, and on-demand content-script injection.
    Talks to tabs (and the welcome page) once the content script is present.
    First feature script in the background classic-script chain. */
 (function (root) {
@@ -8,6 +8,14 @@
   const K = root.Kurippu;
 
   BG.WELCOME = chrome.runtime.getURL('pages/welcome/welcome.html');
+
+  /* Page Chrome opens after removal. The form on that page sends the answers; this extension does not. */
+  BG.UNINSTALL_URL = 'https://kurippu.yush.dev/uninstalled/';
+
+  /** Register the uninstall page so a removal opens it in a new tab. */
+  BG.registerUninstallPage = function registerUninstallPage() {
+    chrome.runtime.setUninstallURL(BG.UNINSTALL_URL);
+  };
 
   /** Inject the content script into every open page that can hold notes. */
   BG.injectOpenTabs = async function injectOpenTabs() {
@@ -40,6 +48,7 @@
 
   /** Create the context menu and run install/update side effects. */
   BG.onInstalled = async function onInstalled({ reason }) {
+    BG.registerUninstallPage();
     chrome.contextMenus.removeAll(() => {
       chrome.contextMenus.create({ id: 'add-note', title: 'Add sticky note here', contexts: ['page', 'selection', 'image', 'video', 'frame'] });
     });
@@ -68,4 +77,7 @@
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     BG.toTab(tab, { type: 'new-note' });
   };
+
+  // Every worker start, so a later wake keeps the same page registered.
+  BG.registerUninstallPage();
 })(self);
