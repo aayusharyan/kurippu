@@ -113,7 +113,7 @@
   };
 
   /** Drop fields JSON export should not carry. Minimised chip state (`min`)
-     still syncs and backs up with the live note; only the export omits it. */
+     still syncs and backs up with the note; only the export omits it. */
   B.portable = function portable(n) {
     const { min, ...rest } = n;
     return rest;
