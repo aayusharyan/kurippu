@@ -2,7 +2,7 @@
 
 This extension's own code and content are released under the [MIT License](LICENSE). This repository also contains the third-party material below, which keeps its original license.
 
-There is no `package.json` and no npm dependencies. Everything ships as the plain source files in this tree.
+The extension has no `package.json` and no npm dependencies. Everything it ships is plain source under `extension/` (plus the licenses listed here). The `website/` submodule is a separate repo and may have its own Node toolchain.
 
 ## Fonts
 
@@ -104,7 +104,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
 ## Icons
 
-The SVG path data in [`extension/shared/shared.js`](extension/shared/shared.js) comes from [Lucide](https://lucide.dev). Lucide is licensed under the ISC License; the icons that derive from the [Feather](https://feathericons.com) project are additionally covered by the MIT License. Both notices are reproduced below as those licenses require.
+The SVG path data in [`extension/shared/icons.js`](extension/shared/icons.js) comes from [Lucide](https://lucide.dev). Lucide is licensed under the ISC License; the icons that derive from the [Feather](https://feathericons.com) project are additionally covered by the MIT License. Both notices are reproduced below as those licenses require.
 
 ### Lucide: ISC License
 
