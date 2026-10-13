@@ -24,6 +24,8 @@ Instructions for AI coding agents working in this repository, whichever tool or 
 
 The product-site presence signal (see README → "Product-site presence") posts only `{ source, type, version }` on the allowlisted product origins, in-tab via `postMessage`. Never widen the payload or the origin list without updating that README section.
 
+On removal, the service worker calls `chrome.runtime.setUninstallURL` with `https://kurippu.yush.dev/uninstalled/` only (see README → "Uninstall feedback"). That asks Chrome to open a tab. It is not a network call. Do not add note data, a client id, or any other query to that URL. The form and the request it may send belong to the website repository.
+
 ### 4. `website/` is a separate repository
 
 `website/` is a **git submodule** pointing at [`kurippu-website`](https://github.com/aayusharyan/kurippu-website), a full-fledged repo with its own README, `AGENTS.md`, issues, security policy and history. Don't edit files under `website/` while working on the extension, and don't carry extension conventions (or these rules) into it. If a task is actually about the marketing site, say so and point the user at that repo, or follow its own `AGENTS.md` if you are invoked from inside it.
@@ -62,7 +64,7 @@ A Manifest V3 Chromium extension that lets you leave Markdown sticky notes on an
 | --- | --- |
 | Manifest, permissions, content-script matches | `extension/manifest.json` |
 | Why each permission is declared | README → "Permissions" |
-| Context menu, badge, sync mirror, backup alarms, message routing (ordered classic scripts; `background.js` is the thin entry) | `extension/background/` (`lifecycle.js` … `listeners.js`, entry `background.js`) |
+| Context menu, badge, sync mirror, backup alarms, uninstall page, message routing (ordered classic scripts; `background.js` is the thin entry) | `extension/background/` (`lifecycle.js` … `listeners.js`, entry `background.js`) |
 | In-page note engine: shadow DOM, anchoring, edit/preview, drag, swing animations (ordered classic scripts; `content.js` is the thin bootstrap) | `extension/content/` (`setup.js` … `fonts.js`, bootstrap `content.js`) |
 | Product-site presence announce (allowlisted origins, `postMessage` payload) | `extension/content/setup.js` (`SITE_ORIGINS`, `announcePresenceToSite`); contract in README → "Product-site presence" |
 | Colors, Markdown, time, note reconciliation, storage, note CSS, icons (ordered classic scripts; `shared.js` assembles `Kurippu`) | `extension/shared/` (`constants.js` … `shared.js`) |
